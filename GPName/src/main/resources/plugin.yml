@@ -1,0 +1,35 @@
+name: Name
+main: yt.codechunk.gp.name.Main
+version: 1.0
+api-version: 1.13
+author: Chunk
+softdepend:
+  - PlaceholderAPI
+  - Jobs
+commands:
+  name:
+    usage: /<command> <имя> <фамилия>
+    description: Установить имя
+    permission: name.player
+    aliases:
+      - имя
+  getname:
+    usage: /<command> <имя игрока>
+    permission: name.admin
+  getrealname:
+    usage: /<command> <имя> <фалимия>
+    permission: name.admin
+  ban:
+    usage: /<command> <имя> <фамилия>
+    description: ЗАБААААНЬ
+    permission: name.admin
+  gtn:
+    usage: /<command> <незнакомец>
+    description: Познакомиться с игроком
+    permission: name.player
+permissions:
+  name.player:
+    default: true
+    description: /name
+  name.admin:
+    default: op

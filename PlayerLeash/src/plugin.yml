@@ -1,0 +1,12 @@
+name: PlayerLeash
+version: 1.0
+api-version: 1.13
+author: Iaiao
+main: mc.iaiao.playerleash.PlayerLeash
+permissions:
+  playerleash.leash:
+    description: Захватить игрока поводком
+    default: op
+  playerleash.move:
+    description: Двигаться на поводке
+    default: true

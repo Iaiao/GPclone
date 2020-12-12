@@ -1,0 +1,45 @@
+# Здесь создаются команды.
+# {player} и {message} заменяются на ник игрока и сообщение после команды
+# Например, Iaiao ввёл команду /me покакал, в конфиге "{player} {message}", и эта команда выведет "Iaiao покакал"
+# {random} заменяется на случайное число.
+# Если в сообщении два или больше {random}, то они будут разными.
+# Чтобы они были одинакомыми, есть {fixedrandom}
+# Если есть {random} или {fixedrandom}, необходимо указать параметр random (см. команду roll)
+me:
+  type: "text"
+  format: "{player} {message}"
+  range: 50
+it:
+  type: "text"
+  format: "&7{message}"
+  range: 150
+try:
+  type: "randomtext"
+  range: 50
+  # Шанс, желательно в процентах (для читабельности), но если будут шансы 80 и 70, или 10 и 9, то плагин поймёт, что шансы на самом деле примерно 55%/45%
+  chances:
+    "Текст 1": 80
+    "Текст 2": 30
+    "Успешно выполнено действие {message} ({player})": 50
+    "здесь был {player}": 1
+
+todo:
+  type: "split"
+  split-by: " \\* " # Разделитель (regex). Тестировать здесь https://regexr.com/
+  format: "{message 1}, - сказал {player}, {message 2}"
+
+roll:
+  type: "text"
+  format: "Roll: {random}"
+  range: 50
+  random:
+    default-min: 0
+    default-max: 100
+    # Если input-range включено, можно будет ввести /roll <минимальное число> <максимальное число> <сообщение, можно и без него>, и этих чисел не будет в {message}
+    input-range: on
+    error: "Использование: /roll или /roll <минимальное значение> <максимальное значение>"
+    player-min: -100
+    player-max: 1000
+    invalid-player-range: "&cМожно вводить диапазоны от -100 до 1000"
+
+use permissions: on # Необходимо ли право rpcommands.<название>?

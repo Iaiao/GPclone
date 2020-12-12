@@ -1,0 +1,5 @@
+name: Bolnitsa
+version: 1.0
+api-version: 1.13
+author: Chunk
+main: yt.codechunk.bolnitsa.Main

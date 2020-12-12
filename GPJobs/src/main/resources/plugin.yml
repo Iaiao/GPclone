@@ -1,0 +1,24 @@
+name: Jobs
+main: yt.codechunk.gp.jobs.Main
+version: 1.0
+api-version: 1.13
+author: Chunk
+depend:
+  - Name
+commands:
+  job:
+    usage: /<command> <работа>
+    description: Устроиться на работу
+    permission: job.job
+    aliases:
+      - работа
+  secondaryjob:
+    usage: /<command> <работа>
+    description: Устроиться на работу
+    permission: job.job
+    aliases:
+      - работа_вторая
+permissions:
+  job.job:
+    default: true
+    description: /job
