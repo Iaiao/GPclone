@@ -286,12 +286,6 @@ public class Main extends JavaPlugin implements Listener {
         if (event.isSigning()) {
             if (getJob(event.getPlayer()).isLawyer()) {
                 BookMeta meta = event.getNewBookMeta();
-                if (event.getNewBookMeta().getTitle().startsWith("@")) {
-                    meta.setTitle(meta.getTitle().substring(1).trim());
-                } else {
-                    meta.setTitle(ChatColor.GRAY + meta.getTitle());
-                    meta.addPage("Shift+ПКМ по " + meta.getAuthor() + " чтобы подписать");
-                }
                 meta.setAuthor(
                         yt.codechunk.gp.name.Main.formatName(
                                 yt.codechunk.gp.name.Main.getInstance().getName(
@@ -299,6 +293,12 @@ public class Main extends JavaPlugin implements Listener {
                                 )
                         )
                 );
+                if (event.getNewBookMeta().getTitle().startsWith("@")) {
+                    meta.setTitle(meta.getTitle().substring(1).trim());
+                } else {
+                    meta.setTitle(ChatColor.GRAY + meta.getTitle());
+                    meta.addPage("Shift+ПКМ по " + meta.getAuthor() + " чтобы подписать");
+                }
                 event.setNewBookMeta(meta);
             }
         }
