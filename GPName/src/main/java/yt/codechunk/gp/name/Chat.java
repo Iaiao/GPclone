@@ -19,24 +19,23 @@ public class Chat implements Listener {
             String format, message;
             Collection<Player> players;
             if (event.getMessage().startsWith("!")) {
-                format = "&7%s&8: &f%s";
+                format = Main.getInstance().chatGlobal;
                 message = event.getMessage().substring(1);
                 players = (Collection<Player>) Bukkit.getOnlinePlayers();
             } else {
-                format = "&f%s&8: &f%s";
+                format = Main.getInstance().chatLocal;
                 message = event.getMessage();
                 players = event.getPlayer()
-                        .getNearbyEntities(50, 50, 50)
+                        .getNearbyEntities(Main.getInstance().chatLocalRadius, Main.getInstance().chatLocalRadius, Main.getInstance().chatLocalRadius)
                         .stream()
                         .filter(entity -> entity.getType() == EntityType.PLAYER)
                         .map(entity -> (Player) entity)
                         .collect(Collectors.toList());
                 players.add(event.getPlayer());
             }
-            String fFormat = ChatColor.translateAlternateColorCodes('&', format);
             players.forEach(player -> player.sendMessage(
                     String.format(
-                            fFormat,
+                            format,
                             Main.getInstance().strangers.nameFor(player, event.getPlayer()),
                             message
                     )

@@ -27,7 +27,7 @@ public class JobCommand implements TabExecutor {
             Job job = primaryJobs.get(args[0].toUpperCase());
             Jobs jobs = Main.getInstance().getJob(sender.getName());
             Main.getInstance().jobs.put(sender.getName().toLowerCase(), new Jobs(job, jobs == null ? Job.UNEMPLOYED : jobs.secondary));
-            sender.sendMessage("А теперь работай!");
+            sender.sendMessage(Main.getInstance().configJobSet);
             return true;
         } else {
             return false;

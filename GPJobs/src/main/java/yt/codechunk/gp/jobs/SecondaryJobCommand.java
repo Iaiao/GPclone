@@ -15,7 +15,6 @@ public class SecondaryJobCommand implements TabExecutor {
         put("ИНЖЕНЕР", Job.ENGINEER);
         put("МАГ", Job.WIZARD);
         put("КАРТОГРАФ", Job.CARTOGRAPHER);
-        put("ХОДИТЕЛЬ_ПО_НЕЗЕРУ", Job.NETHER);
         put("РЫБАК", Job.FISHERMAN);
         put("ЮРИСТ", Job.LAWYER);
         put("КАМЕНЩИК", Job.MASON);
@@ -30,7 +29,7 @@ public class SecondaryJobCommand implements TabExecutor {
             Job job = secondaryJobs.get(args[0].toUpperCase());
             Jobs jobs = Main.getInstance().getJob(sender.getName());
             Main.getInstance().jobs.put(sender.getName().toLowerCase(), new Jobs(jobs == null ? Job.UNEMPLOYED : jobs.primary, job));
-            sender.sendMessage("А теперь работай!");
+            sender.sendMessage(Main.getInstance().configJobSet);
             return true;
         } else {
             return false;

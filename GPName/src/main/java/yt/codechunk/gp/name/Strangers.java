@@ -13,7 +13,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -41,7 +40,6 @@ public class Strangers implements Listener, TabExecutor {
                 break;
             } else {
                 i++;
-                continue; // unnecessary continue is here for readability reasons
             }
         }
         strangerIds.put(player.getName().toLowerCase(), i);
@@ -58,10 +56,10 @@ public class Strangers implements Listener, TabExecutor {
             if (!knows(event.getPlayer().getName(), event.getRightClicked().getName())) {
                 if (event.getHand() == EquipmentSlot.HAND) {
                     String strangerName = getStrangerName(event.getRightClicked().getName());
-                    TextComponent component = new TextComponent("Хочешь познакомиться с " + strangerName + "? ");
-                    TextComponent click = new TextComponent("[Жми сюда]");
+                    TextComponent component = new TextComponent(Main.getInstance().configStrangerrmb.replace("\\{player}", strangerName));
+                    TextComponent click = new TextComponent(Main.getInstance().configClickablegtn);
                     click.setColor(ChatColor.GRAY);
-                    click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Да, сюда")));
+                    click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(Main.getInstance().configClickablegtnhover)));
                     click.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/gtn " + strangerName));
                     component.addExtra(click);
                     event.getPlayer().spigot().sendMessage(component);
@@ -84,7 +82,7 @@ public class Strangers implements Listener, TabExecutor {
 
     public Optional<Player> getFromStrangerName(String name) {
         if (!name.matches("Незнакомец \\(\\d+\\)")) {
-            throw new IllegalArgumentException("Неверное имя незнакомца: " + name);
+            throw new IllegalArgumentException(Main.getInstance().configInvalidstranger.replaceAll("\\{player}", name));
         } else {
             return getFromStrangerId(Integer.parseInt(name.substring("Незнакомец (".length()).substring(0, name.length() - "Незнакомец (".length() - ")".length())));
         }
@@ -122,19 +120,19 @@ public class Strangers implements Listener, TabExecutor {
         String ign = Main.formatName(Main.getInstance().getName(player.getName()));
         String senderIgn = Main.formatName(Main.getInstance().getName(sender.getName()));
         if (ign.equalsIgnoreCase(player.getName())) {
-            sender.sendMessage("У этого игрока ещё нет имени");
+            sender.sendMessage(Main.getInstance().configNoname);
         } else if (!knowing.contains(entry)) {
             knowing.add(entry);
-            sender.sendMessage("Ты познакомился с " + s);
-            TextComponent component = new TextComponent(senderIgn + " хочут с тобой познакомиться. ");
-            TextComponent accept = new TextComponent("[ПОЗНАКОМИТЬСЯ]");
+            sender.sendMessage(Main.getInstance().configGtn.replaceAll("\\{player}", s));
+            TextComponent component = new TextComponent(Main.getInstance().configWantsgtn.replace("\\{player}", senderIgn));
+            TextComponent accept = new TextComponent(Main.getInstance().configGtnbutton);
             accept.setColor(ChatColor.GRAY);
-            accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Познакомиться с " + senderIgn)));
+            accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(Main.getInstance().configClickablegtnhover.replace("\\{player}", senderIgn))));
             accept.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/gtn " + senderIgn));
             component.addExtra(accept);
             player.spigot().sendMessage(component);
         } else {
-            sender.sendMessage(s + " уже тебя знает. Он должен написать \"/gtn " + Main.formatName(Main.getInstance().getName(sender.getName())) + "\" чтобы ты знал его");
+            sender.sendMessage(Main.getInstance().configAlreadyknows.replaceAll("\\{player}", s).replaceAll("\\{command}", "/gtn " + Main.formatName(Main.getInstance().getName(sender.getName()))));
         }
         return true;
     }

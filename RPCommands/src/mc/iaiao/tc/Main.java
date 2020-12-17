@@ -1,17 +1,10 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
 package mc.iaiao.tc;
 
 import org.bukkit.command.CommandMap;
-import java.util.Iterator;
 import java.util.Objects;
-import java.util.logging.LogManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin
-{
+public class Main extends JavaPlugin {
     public void onEnable() {
         this.saveDefaultConfig();
         for (final String cmd : this.getConfig().getKeys(false)) {

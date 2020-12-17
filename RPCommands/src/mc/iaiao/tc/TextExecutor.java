@@ -1,18 +1,11 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
 package mc.iaiao.tc;
 
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
@@ -20,8 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.CommandExecutor;
 
-public class TextExecutor implements CommandExecutor
-{
+public class TextExecutor implements CommandExecutor {
     private String format;
     private int range;
     private int randomDefaultMin;

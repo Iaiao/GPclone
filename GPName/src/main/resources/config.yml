@@ -1,0 +1,32 @@
+oobe:
+  chat: |-
+    Как играть:
+    Для начала выбери себе имя и введи команду /имя <имя> <фамилия>
+    Потом выбери работу (/работа и /работа_вторая)
+    Дальше уже сам разбирайся
+  title: "Открой чат"
+  subtitle: "Там инструкция как играть"
+
+resource pack: "https://mrbans.ru/gppack"
+
+chat:
+  local format: "&f%s&8: &f%s"
+  global format: "&7%s&8: &f%s"
+  local radius: 50
+
+messages:
+  namechange: "Менять имя нельзя!"
+  nameplayerexists: "Имя уже занято!"
+  nameinvalid: "Неверное имя или фамилия!"
+  nameset: "Имя установлено."
+  setname: "Сначала введи /имя <Имя> <Фамилия>"
+  strangerrmb: "Хочешь познакомиться с {player}? "
+  clickablegtn: "[Жми сюда]"
+  clickablegtnhover: "Да, сюда"
+  invalidstranger: "Неверное имя незнакомца. Должно быть в формате \"Незнакомец (n)\", где n - число"
+  noname: "У этого игрока ещё нет имени."
+  gtn: "Ты познакомился с {player} (теперь он знает твоё имя)"
+  wantsgtn: "{player} хочет с тобой познакомиться. "
+  gtnbutton: "[ПОЗНАКОМИТЬСЯ]"
+  gtnbuttonhover: "Познакомиться с {player}"
+  alreadyknows: "{player} уже тебя знает. Он должен написать {command} чтобы ты знал его."

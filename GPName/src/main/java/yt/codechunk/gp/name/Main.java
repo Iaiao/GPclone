@@ -7,8 +7,6 @@ import net.minecraft.server.v1_16_R3.PacketPlayOutTitle;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage;
 import org.bukkit.entity.Entity;
@@ -31,10 +29,43 @@ import java.util.*;
 public class Main extends JavaPlugin implements Listener {
     private final File saveFile = new File(getDataFolder(), "save.dat");
     private final List<Player> acceptedResourcePack = new LinkedList<>();
-    private Team nameTagHideTeam;
     HashMap<String, String> playerNames = new HashMap<>();
     Strangers strangers;
     OOBE oobe;
+    String configOobeChat;
+    String configOobeTitle;
+    String configOobeSubtitle;
+    String resourcePack;
+    String chatLocal;
+    String chatGlobal;
+    int chatLocalRadius;
+    String configNamechange;
+    String configNameplayerexists;
+    String configNameinvalid;
+    String configNameset;
+    String configSetname;
+    String configStrangerrmb;
+    String configClickablegtn;
+    String configClickablegtnhover;
+    String configInvalidstranger;
+    String configNoname;
+    String configGtn;
+    String configWantsgtn;
+    String configGtnbutton;
+    String configGtnbuttonhover;
+    String configAlreadyknows;
+
+    private Team nameTagHideTeam;
+
+    public static String formatName(String fullName) {
+        String name = fullName.split(" ")[0];
+        String surname = fullName.contains(" ") ? fullName.split(" ")[1] : " ";
+        return name.substring(0, 1).toUpperCase() + name.substring(1) + " " + surname.substring(0, 1).toUpperCase() + surname.substring(1);
+    }
+
+    public static Main getInstance() {
+        return Main.getPlugin(Main.class);
+    }
 
     @Override
     public void onEnable() {
@@ -54,7 +85,6 @@ public class Main extends JavaPlugin implements Listener {
         }
         nameTagHideTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 
-        // Small check to make sure that PlaceholderAPI is installed
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new NamePlaceholder().register();
         }
@@ -68,25 +98,21 @@ public class Main extends JavaPlugin implements Listener {
             if (args.length != 2) {
                 return false;
             }
-            if(playerNames.containsKey(sender.getName().toLowerCase())) {
-                sender.sendMessage("Менять имя нельзя!");
+            if (playerNames.containsKey(sender.getName().toLowerCase())) {
+                sender.sendMessage(configNamechange);
                 return true;
             }
             String name = (args[0] + " " + args[1]).toLowerCase();
             if (playerNames.containsValue(name)) {
-                sender.sendMessage("Такое имя уже занято");
+                sender.sendMessage(configNameplayerexists);
                 return true;
             }
-            if (playerNames.containsKey(sender.getName())) {
-                sender.sendMessage("Имя менять запрещено");
-                return true;
-            }
-            if(!name.matches("[а-яА-Я]{0,32} [а-яА-Я]{0,32}")) {
-                sender.sendMessage("Неверное имя или фамилия: Они должны быть киррилическими");
+            if (!name.matches("[а-яА-Я]{0,32} [а-яА-Я]{0,32}")) {
+                sender.sendMessage(configNameinvalid);
                 return true;
             }
             playerNames.put(sender.getName().toLowerCase(), name);
-            sender.sendMessage("Имя установлено");
+            sender.sendMessage(configNameset);
             yt.codechunk.gp.jobs.Main.getInstance().jobs.put(sender.getName().toLowerCase(), Jobs.UNEMPLOYED);
             reloadPlayer((Player) sender);
             oobe.newbies.remove(sender);
@@ -123,7 +149,7 @@ public class Main extends JavaPlugin implements Listener {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             int i = (int) (Math.random() * 16);
             String color = "\u00A7" + Integer.toHexString(i);
-            oobe.newbies.forEach(player -> player.sendTitle(color + "Открой чат", "Там инструкция как начать игру", 5, 25, 5));
+            oobe.newbies.forEach(player -> player.sendTitle(color + configOobeTitle, configOobeSubtitle, 5, 25, 5));
         }, 20, 20);
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
@@ -185,16 +211,33 @@ public class Main extends JavaPlugin implements Listener {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+
+        configOobeChat = getConfig().getString("oobe.chat");
+        configOobeTitle = getConfig().getString("oobe.title");
+        configOobeSubtitle = getConfig().getString("oobe.subtitle");
+        resourcePack = getConfig().getString("resource pack");
+        chatLocal = getConfig().getString("chat.local format");
+        chatGlobal = getConfig().getString("chat.global format");
+        chatLocalRadius = getConfig().getInt("chat.local radius");
+        configNamechange = getConfig().getString("messages.namechange");
+        configNameplayerexists = getConfig().getString("messages.nameplayerexists");
+        configNameinvalid = getConfig().getString("messages.nameinvalid");
+        configNameset = getConfig().getString("messages.nameset");
+        configSetname = getConfig().getString("messages.setname");
+        configStrangerrmb = getConfig().getString("messages.strangerrmb");
+        configClickablegtn = getConfig().getString("messages.clickablegtn");
+        configClickablegtnhover = getConfig().getString("messages.clickablegtnhover");
+        configInvalidstranger = getConfig().getString("messages.invalidstranger");
+        configNoname = getConfig().getString("messages.noname");
+        configGtn = getConfig().getString("messages.gtn");
+        configWantsgtn = getConfig().getString("messages.wantsgtn");
+        configGtnbutton = getConfig().getString("messages.gtnbutton");
+        configGtnbuttonhover = getConfig().getString("messages.gtnbuttonhover");
+        configAlreadyknows = getConfig().getString("messages.alreadyknows");
     }
 
     public String getName(String name) {
         return playerNames.getOrDefault(name.toLowerCase(), name.toLowerCase());
-    }
-
-    public static String formatName(String fullName) {
-        String name = fullName.split(" ")[0];
-        String surname = fullName.contains(" ") ? fullName.split(" ")[1] : " ";
-        return name.substring(0, 1).toUpperCase() + name.substring(1) + " " + surname.substring(0, 1).toUpperCase() + surname.substring(1);
     }
 
     public Optional<String> getRealName(String name) {
@@ -218,7 +261,7 @@ public class Main extends JavaPlugin implements Listener {
         nameTagHideTeam.addEntry(event.getPlayer().getName());
         getLogger().info(nameTagHideTeam.getEntries().toString());
         reloadPlayer(event.getPlayer());
-        event.getPlayer().setResourcePack("https://mrbans.ru/gppack");
+        event.getPlayer().setResourcePack(resourcePack);
         for (Player player : getServer().getOnlinePlayers()) {
             player.spigot().sendMessage(new TranslatableComponent("multiplayer.player.joined", strangers.nameFor(player, event.getPlayer())));
         }
@@ -244,9 +287,5 @@ public class Main extends JavaPlugin implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         event.setDeathMessage(null);
-    }
-
-    public static Main getInstance() {
-        return Main.getPlugin(Main.class);
     }
 }

@@ -1,0 +1,41 @@
+redstone damage radius: 3
+non-hanter damage multiplier: 0.1
+
+blocks:
+  crops:
+    - BEETROOTS
+    - POTATOES
+    - WHEAT
+    - CARROTS
+    - MELON_STEM
+    - MELON
+    - PUMPKIN
+    - PUMPKIN_STEM
+    - GRASS
+    - TALL_GRASS
+  redstone:
+    - REDSTONE_BLOCK,
+    - REDSTONE_LAMP,
+    - REDSTONE,
+    - REDSTONE_WIRE,
+    - REDSTONE_TORCH,
+    - REDSTONE_WALL_TORCH,
+    - REPEATER,
+    - COMPARATOR
+inventories:
+  redstone:
+    - DISPENSER
+    - DROPPER
+  tinker:
+    - ANVIL
+    - WORKBENCH
+    - SMOKER
+    - BLAST_FURNACE
+    - SMITHING
+
+job set: "Работа установлена."
+
+how to sign: "Shift+ПКМ по {player} чтобы подписать"
+signed by: "&7Подписано: {player}"
+signed: "&aПодписано!"
+player signed: "{player} подписал {document}"

@@ -2,7 +2,6 @@ package mc.iaiao.tc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -16,8 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-public class SplitExecutor
-        implements CommandExecutor {
+public class SplitExecutor implements CommandExecutor {
     private String format;
     private int range;
     private String splitBy;

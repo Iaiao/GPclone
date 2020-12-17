@@ -23,7 +23,6 @@ public class Jobs implements Serializable {
     boolean canCreatePortal() { return primary.canCreatePortal() || secondary.canCreatePortal(); }
     boolean canTinker() { return primary.canTinker() || secondary.canTinker(); }
     boolean canMakeMaps() { return primary.canMakeMaps() || secondary.canMakeMaps(); }
-    boolean canEnterNether() { return primary.canEnterNether() || secondary.canEnterNether(); }
     boolean canFish() { return primary.canFish() || secondary.canFish(); }
     boolean isLawyer() { return primary.isLawyer() || secondary.isLawyer(); }
     boolean canStonecut() { return primary.canStonecut() || secondary.canStonecut(); }

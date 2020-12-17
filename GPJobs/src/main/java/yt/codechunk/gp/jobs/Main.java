@@ -25,17 +25,33 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main extends JavaPlugin implements Listener {
     private final File saveFile = new File(getDataFolder(), "save.dat");
     public HashMap<String, Jobs> jobs = new HashMap<>();
 
+    int configRedstoneDamageRadius;
+    int configNonHunterDamageMultiplier;
+    String configJobSet;
+    String configHowToSign;
+    String configSignedBy;
+    String configSigned;
+    String configPlayerSigned;
+    List<Material> configCropBlocks;
+    List<Material> configRedstoneBlocks;
+    List<InventoryType> configTinkerInventories;
+    List<InventoryType> configRedstoneInventories;
+
+    public static Main getInstance() {
+        return Main.getPlugin(Main.class);
+    }
+
     @Override
     public void onEnable() {
-        if (!getDataFolder().exists()) getDataFolder().mkdir();
+        saveDefaultConfig();
         load();
 
         getCommand("job").setExecutor(new JobCommand());
@@ -47,10 +63,10 @@ public class Main extends JavaPlugin implements Listener {
             getServer().getOnlinePlayers().forEach(player -> {
                 if (!getJob(player).canRedstone()) {
                     Location location = player.getLocation();
-                    for (int x = -3; x <= 3; x++) {
-                        for (int y = -3; y <= 3; y++) {
-                            for (int z = -3; z <= 3; z++) {
-                                if (REDSTONE_BLOCKS.contains(location.clone().add(x, y, z).getBlock().getType())) {
+                    for (int x = -configRedstoneDamageRadius; x <= configRedstoneDamageRadius; x++) {
+                        for (int y = -configRedstoneDamageRadius; y <= configRedstoneDamageRadius; y++) {
+                            for (int z = -configRedstoneDamageRadius; z <= configRedstoneDamageRadius; z++) {
+                                if (configRedstoneBlocks.contains(location.clone().add(x, y, z).getBlock().getType())) {
                                     player.damage(1);
                                 }
                             }
@@ -87,10 +103,6 @@ public class Main extends JavaPlugin implements Listener {
         }
     }
 
-    public static Main getInstance() {
-        return Main.getPlugin(Main.class);
-    }
-
     private void load() {
         if (!saveFile.exists()) return;
         try {
@@ -100,36 +112,23 @@ public class Main extends JavaPlugin implements Listener {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        configRedstoneDamageRadius = getConfig().getInt("redstone damage radius");
+        configJobSet = ChatColor.translateAlternateColorCodes('&', getConfig().getString("job set"));
+        configHowToSign = ChatColor.translateAlternateColorCodes('&', getConfig().getString("how to sign"));
+        configSignedBy = ChatColor.translateAlternateColorCodes('&', getConfig().getString("signed by"));
+        configSigned = ChatColor.translateAlternateColorCodes('&', getConfig().getString("signed"));
+        configPlayerSigned = ChatColor.translateAlternateColorCodes('&', getConfig().getString("player signed"));
+        configCropBlocks = getConfig().getStringList("blocks.crops").stream().map(Material::matchMaterial).collect(Collectors.toList());
+        configRedstoneBlocks = getConfig().getStringList("blocks.redstone").stream().map(Material::matchMaterial).collect(Collectors.toList());
+        configRedstoneInventories = getConfig().getStringList("inventories.redstone").stream().map(InventoryType::valueOf).collect(Collectors.toList());
+        configTinkerInventories = getConfig().getStringList("inventories.tinker").stream().map(InventoryType::valueOf).collect(Collectors.toList());
     }
-
-    private static final List<Material> CROPS = Arrays.asList(
-            Material.BEETROOTS,
-            Material.POTATOES,
-            Material.WHEAT,
-            Material.CARROTS,
-            Material.MELON_STEM,
-            Material.MELON,
-            Material.PUMPKIN,
-            Material.PUMPKIN_STEM,
-            Material.GRASS,
-            Material.TALL_GRASS
-    );
-    private static final List<Material> REDSTONE_BLOCKS = Arrays.asList(
-            Material.REDSTONE_BLOCK,
-            Material.REDSTONE_LAMP,
-            Material.REDSTONE,
-            Material.REDSTONE_WIRE,
-            Material.REDSTONE_TORCH,
-            Material.REDSTONE_WALL_TORCH,
-            Material.REPEATER,
-            Material.COMPARATOR
-    );
 
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
         if (
-                !(getJob(event.getPlayer()).canFarm() && CROPS.contains(event.getBlock().getType())) &&
-                        !(getJob(event.getPlayer()).canRedstone() && REDSTONE_BLOCKS.contains(event.getBlock().getType()))
+                !(getJob(event.getPlayer()).canFarm() && configCropBlocks.contains(event.getBlock().getType())) &&
+                        !(getJob(event.getPlayer()).canRedstone() && configRedstoneBlocks.contains(event.getBlock().getType()))
         ) {
             if (!getJob(event.getPlayer()).canBreak()) {
                 event.setCancelled(true);
@@ -140,8 +139,8 @@ public class Main extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
         if (
-                !(getJob(event.getPlayer()).canFarm() && CROPS.contains(event.getBlock().getType())) &&
-                        !(getJob(event.getPlayer()).canRedstone() && REDSTONE_BLOCKS.contains(event.getBlock().getType())) &&
+                !(getJob(event.getPlayer()).canFarm() && configCropBlocks.contains(event.getBlock().getType())) &&
+                        !(getJob(event.getPlayer()).canRedstone() && configRedstoneBlocks.contains(event.getBlock().getType())) &&
                         !(event.getBlock().getType() == Material.FIRE)
         ) {
             if (!getJob(event.getPlayer()).canPlace()) {
@@ -154,7 +153,7 @@ public class Main extends JavaPlugin implements Listener {
     public void onDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager().getType() == EntityType.PLAYER) {
             if (!getJob((Player) event.getDamager()).canDamage()) {
-                event.setDamage(event.getDamage() / 10.0);
+                event.setDamage(event.getDamage() * configNonHunterDamageMultiplier);
             }
         }
     }
@@ -184,15 +183,10 @@ public class Main extends JavaPlugin implements Listener {
         }
     }
 
-    private static final List<InventoryType> REDSTONE_INVENTORIES = Arrays.asList(
-            InventoryType.DISPENSER,
-            InventoryType.DROPPER
-    );
-
     @EventHandler
     public void onRedstoneOpen(InventoryOpenEvent event) {
         if (event.getPlayer().getType() == EntityType.PLAYER) {
-            if (REDSTONE_INVENTORIES.contains(event.getInventory().getType())) {
+            if (configRedstoneInventories.contains(event.getInventory().getType())) {
                 if (!getJob((Player) event.getPlayer()).canRedstone()) {
                     event.setCancelled(true);
                 }
@@ -204,7 +198,7 @@ public class Main extends JavaPlugin implements Listener {
     public void onRedstoneInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             assert event.getClickedBlock() != null;
-            if (REDSTONE_BLOCKS.contains(event.getClickedBlock().getType())) {
+            if (configRedstoneBlocks.contains(event.getClickedBlock().getType())) {
                 if (!getJob(event.getPlayer()).canRedstone()) {
                     event.setCancelled(true);
                 }
@@ -212,18 +206,10 @@ public class Main extends JavaPlugin implements Listener {
         }
     }
 
-    private static final List<InventoryType> TINKER_INVENTORIES = Arrays.asList(
-            InventoryType.ANVIL,
-            InventoryType.WORKBENCH,
-            InventoryType.SMOKER,
-            InventoryType.BLAST_FURNACE,
-            InventoryType.SMITHING
-    );
-
     @EventHandler
     public void onTinker(InventoryOpenEvent event) {
         if (event.getPlayer().getType() == EntityType.PLAYER) {
-            if (TINKER_INVENTORIES.contains(event.getInventory().getType())) {
+            if (configTinkerInventories.contains(event.getInventory().getType())) {
                 if (!getJob((Player) event.getPlayer()).canTinker()) {
                     event.setCancelled(true);
                 }
@@ -264,15 +250,6 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onNether(PlayerPortalEvent event) {
-        if (event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL && event.getFrom().getWorld().getEnvironment() == World.Environment.NORMAL) {
-            if (!getJob(event.getPlayer()).canEnterNether()) {
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler
     public void onFishing(PlayerFishEvent event) {
         if (event.getState() == PlayerFishEvent.State.FISHING) {
             if (!getJob(event.getPlayer()).canFish()) {
@@ -294,10 +271,10 @@ public class Main extends JavaPlugin implements Listener {
                         )
                 );
                 if (event.getNewBookMeta().getTitle().startsWith("@")) {
-                    meta.setTitle(meta.getTitle().substring(1).trim());
+                    meta.setTitle(meta.getTitle().substring("@".length()).trim());
                 } else {
                     meta.setTitle(ChatColor.GRAY + meta.getTitle());
-                    meta.addPage("Shift+ПКМ по " + meta.getAuthor() + " чтобы подписать");
+                    meta.addPage(configHowToSign.replaceAll("\\{player}", meta.getAuthor()));
                 }
                 event.setNewBookMeta(meta);
             }
@@ -319,11 +296,11 @@ public class Main extends JavaPlugin implements Listener {
                                                 event.getPlayer().getName()
                                         )
                                 );
-                                meta.addPage(ChatColor.GRAY + "Подписано: " + name);
+                                meta.addPage(configSignedBy.replaceAll("\\{player}", name));
                                 itemStack.setItemMeta(meta);
-                                event.getPlayer().sendMessage(ChatColor.GREEN + "Подписано!");
+                                event.getPlayer().sendMessage(configSigned);
                                 event.getPlayer().closeInventory();
-                                event.getRightClicked().sendMessage(name + ChatColor.GREEN + " подписал " + meta.getTitle());
+                                event.getRightClicked().sendMessage(configPlayerSigned.replaceAll("\\{player}", name).replaceAll("\\{document}", meta.getTitle()));
                                 event.setCancelled(true);
                             }
                         }

@@ -1,22 +1,14 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
 package mc.iaiao.tc;
 
 import org.bukkit.ChatColor;
-import java.util.Iterator;
-import org.bukkit.configuration.ConfigurationSection;
 import java.util.HashMap;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.bukkit.command.CommandSender;
-import java.util.List;
 import java.util.Collections;
 import org.bukkit.command.CommandExecutor;
 
-public class Command extends org.bukkit.command.Command
-{
+public class Command extends org.bukkit.command.Command {
     private CommandType type;
     private CommandExecutor executor;
 

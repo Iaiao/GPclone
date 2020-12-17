@@ -1,0 +1,16 @@
+world: "world"
+
+teleport to:
+  x: 0
+  y: 100
+  z: 0
+
+region:
+  x1: -10
+  y1: 0
+  z1: -15
+  x2: 10
+  y2: 256
+  z2: 15
+
+hearts format: "Твоё здоровье: {health}"

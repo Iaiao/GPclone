@@ -21,7 +21,7 @@ public class OOBE implements Listener {
         if(Main.getInstance().getName(event.getPlayer().getName()).equalsIgnoreCase(event.getPlayer().getName())) {
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
             newbies.add(event.getPlayer());
-            event.getPlayer().sendMessage("Привет! Тут типо правила и обучение по серверу, чо как работает, но мне лень это писать поэтому просто введи /имя Имя Фамилия. Указывайте нормальное имя, а не Товарищ Ярослав");
+            event.getPlayer().sendMessage(Main.getInstance().configOobeChat);
         }
     }
 
@@ -38,17 +38,16 @@ public class OOBE implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         if(!newbies.contains(event.getPlayer())) return;
-
         event.setCancelled(true);
+        event.getPlayer().sendMessage(Main.getInstance().configSetname);
     }
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         if(!newbies.contains(event.getPlayer())) return;
-
         if(!event.getMessage().startsWith("/name") && !event.getMessage().startsWith("/имя")) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage("Сначала введи /имя <Имя> <Фамилия>");
+            event.getPlayer().sendMessage(Main.getInstance().configSetname);
         }
     }
 }
