@@ -25,6 +25,7 @@ import yt.codechunk.gp.jobs.Jobs;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main extends JavaPlugin implements Listener {
     private final File saveFile = new File(getDataFolder(), "save.dat");
@@ -39,6 +40,7 @@ public class Main extends JavaPlugin implements Listener {
     String chatLocal;
     String chatGlobal;
     int chatLocalRadius;
+    List<String> allowedCommands;
     String configNamechange;
     String configNameplayerexists;
     String configNameinvalid;
@@ -212,6 +214,8 @@ public class Main extends JavaPlugin implements Listener {
             exception.printStackTrace();
         }
 
+        allowedCommands = getConfig().getStringList("allowed commands");
+        
         configOobeChat = getConfig().getString("oobe.chat");
         configOobeTitle = getConfig().getString("oobe.title");
         configOobeSubtitle = getConfig().getString("oobe.subtitle");

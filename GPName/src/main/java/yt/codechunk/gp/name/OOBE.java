@@ -45,7 +45,7 @@ public class OOBE implements Listener {
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         if(!newbies.contains(event.getPlayer())) return;
-        if(!event.getMessage().startsWith("/name") && !event.getMessage().startsWith("/имя")) {
+        if(Main.getInstance().allowedCommands.stream().noneMatch(command -> event.getMessage().equals("/" + command) || event.getMessage().startsWith("/" + command + " "))) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(Main.getInstance().configSetname);
         }

@@ -14,6 +14,11 @@ chat:
   global format: "&7%s&8: &f%s"
   local radius: 50
 
+# Команды, которые можно вводить перед /name, то есть без имени
+allowed commands:
+  - name
+  - имя
+
 messages:
   namechange: "Менять имя нельзя!"
   nameplayerexists: "Имя уже занято!"
