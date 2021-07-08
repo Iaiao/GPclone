@@ -220,8 +220,8 @@ public class Main extends JavaPlugin implements Listener {
         configOobeTitle = getConfig().getString("oobe.title");
         configOobeSubtitle = getConfig().getString("oobe.subtitle");
         resourcePack = getConfig().getString("resource pack");
-        chatLocal = getConfig().getString("chat.local format");
-        chatGlobal = getConfig().getString("chat.global format");
+        chatLocal = ChatColor.translateAlternateColorCodes('&', getConfig().getString("chat.local format"));
+        chatGlobal = ChatColor.translateAlternateColorCodes('&', getConfig().getString("chat.global format"));
         chatLocalRadius = getConfig().getInt("chat.local radius");
         configNamechange = getConfig().getString("messages.namechange");
         configNameplayerexists = getConfig().getString("messages.nameplayerexists");
